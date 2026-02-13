@@ -1,0 +1,319 @@
+/* ===== СТИЛИ ДЛЯ СТРАНИЦЫ РЕДАКТИРОВАНИЯ ПРОФИЛЯ ===== */
+
+/* Контейнер аватара */
+.avatar-upload-container {
+    text-align: center;
+    padding: 30px 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 15px;
+    margin-bottom: 30px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.avatar-upload-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+}
+
+/* Текущий аватар */
+.current-avatar {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px;
+    transition: var(--transition);
+    position: relative;
+    z-index: 2;
+}
+
+.current-avatar:hover {
+    transform: scale(1.05);
+    border-color: white;
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Метка загрузки аватара */
+.avatar-upload-label {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+}
+
+.avatar-upload-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 10px;
+    border-bottom-left-radius: 75px;
+    border-bottom-right-radius: 75px;
+    font-size: 14px;
+    opacity: 0;
+    transition: opacity 0.3s;
+    z-index: 3;
+    backdrop-filter: blur(5px);
+}
+
+.avatar-upload-label:hover .avatar-upload-overlay {
+    opacity: 1;
+}
+
+/* Предпросмотр аватара */
+#avatar-preview {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 4px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    margin-bottom: 15px;
+    transition: var(--transition);
+}
+
+/* Плейсхолдер аватара */
+.avatar-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 15px;
+    border: 4px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+    transition: var(--transition);
+}
+
+.avatar-placeholder i {
+    font-size: 60px;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Информация о файле */
+.avatar-file-info {
+    margin-top: 15px;
+    padding: 8px 15px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    display: inline-block;
+    backdrop-filter: blur(5px);
+    font-size: 13px;
+}
+
+/* Кнопка удаления аватара */
+.btn-remove-avatar {
+    color: white;
+    background: rgba(220, 53, 69, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    padding: 8px 20px;
+    border-radius: 25px;
+    font-size: 14px;
+    transition: var(--transition);
+    margin-top: 15px;
+    backdrop-filter: blur(5px);
+}
+
+.btn-remove-avatar:hover {
+    background: var(--danger-color);
+    color: white;
+    border-color: white;
+    transform: translateY(-2px);
+}
+
+/* Поле даты */
+input[type="date"] {
+    font-family: inherit;
+    padding: 0.5rem 1rem;
+    line-height: 1.5;
+    color: var(--dark-bg);
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: 0.5rem;
+    transition: var(--transition);
+    width: 100%;
+}
+
+input[type="date"]:focus {
+    border-color: var(--primary-color);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+}
+
+/* Подпись к дате */
+.date-help-text {
+    font-size: 12px;
+    color: var(--secondary-color);
+    margin-top: 5px;
+    padding: 5px 10px;
+    background: var(--light-bg);
+    border-radius: 5px;
+}
+
+/* Группы полей формы */
+.form-group {
+    margin-bottom: 1.8rem;
+}
+
+.form-group label {
+    font-weight: 600;
+    color: var(--dark-bg);
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}
+
+.form-group label i {
+    color: var(--primary-color);
+    margin-right: 5px;
+}
+
+/* Карточка редактирования */
+.card.profile-edit-card {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.card-header.profile-edit-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border: none;
+}
+
+.card-header.profile-edit-header h4 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 1.8rem;
+}
+
+.card-header.profile-edit-header p {
+    opacity: 0.9;
+    margin-bottom: 0;
+    margin-top: 0.5rem;
+    font-size: 1rem;
+}
+
+/* Дополнительные настройки */
+.settings-card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+}
+
+.settings-card .card-header {
+    background: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 1.2rem 1.5rem;
+}
+
+.settings-card .card-header h5 {
+    margin: 0;
+    color: var(--dark-bg);
+    font-weight: 600;
+}
+
+/* Список настроек */
+.settings-list .list-group-item {
+    padding: 1.2rem 1.5rem;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: var(--transition);
+}
+
+.settings-list .list-group-item:hover {
+    background-color: var(--light-bg);
+    padding-left: 2rem;
+}
+
+.settings-list .list-group-item i:first-child {
+    width: 20px;
+    text-align: center;
+}
+
+.settings-list .list-group-item i.fa-chevron-right {
+    color: var(--secondary-color);
+    font-size: 14px;
+}
+
+/* Адаптивность для мобильных */
+@media (max-width: 768px) {
+    .avatar-upload-container {
+        padding: 20px 15px;
+    }
+    
+    .current-avatar,
+    #avatar-preview,
+    .avatar-placeholder {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .avatar-placeholder i {
+        font-size: 48px;
+    }
+    
+    .card-header.profile-edit-header {
+        padding: 1.5rem;
+    }
+    
+    .card-header.profile-edit-header h4 {
+        font-size: 1.5rem;
+    }
+    
+    .form-group {
+        margin-bottom: 1.2rem;
+    }
+}
+
+/* Анимации */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-edit-card {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Стили для уведомлений */
+.custom-file-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}

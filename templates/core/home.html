@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-8 mx-auto text-center mb-5">
+        <h1 class="display-4 fw-bold mb-4">Добро пожаловать на EduPlatform</h1>
+        <p class="lead mb-4">
+            Современная образовательная платформа для онлайн-обучения. 
+            Изучайте новые навыки, проходите курсы и достигайте своих целей!
+        </p>
+        
+        {% if not user.is_authenticated %}
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a href="{% url 'account_signup' %}" class="btn btn-primary btn-lg px-4 me-sm-3">
+                <i class="fas fa-user-plus me-2"></i> Начать обучение
+            </a>
+            <a href="{% url 'account_login' %}" class="btn btn-outline-primary btn-lg px-4">
+                <i class="fas fa-sign-in-alt me-2"></i> Войти
+            </a>
+        </div>
+        {% else %}
+        <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+            <a href="{% url 'core:dashboard' %}" class="btn btn-primary btn-lg px-4 me-sm-3">
+                <i class="fas fa-tachometer-alt me-2"></i> Перейти в личный кабинет
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-book fa-3x text-primary"></i>
+                </div>
+                <h3 class="card-title">Разнообразные курсы</h3>
+                <p class="card-text">
+                    Более 100 курсов по программированию, дизайну, маркетингу 
+                    и другим направлениям.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-chart-line fa-3x text-primary"></i>
+                </div>
+                <h3 class="card-title">Отслеживание прогресса</h3>
+                <p class="card-text">
+                    Личный кабинет с подробной статистикой вашего обучения 
+                    и прогрессом по курсам.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-body text-center">
+                <div class="mb-3">
+                    <i class="fas fa-certificate fa-3x text-primary"></i>
+                </div>
+                <h3 class="card-title">Сертификаты</h3>
+                <p class="card-text">
+                    Получайте сертификаты об окончании курсов, 
+                    которые можно добавить в портфолио.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

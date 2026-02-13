@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block title %}Мой профиль - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">
+                    <i class="fas fa-user me-2"></i>Мой профиль
+                </h4>
+                <a href="{% url 'accounts:profile_edit' %}" class="btn btn-light btn-sm">
+                    <i class="fas fa-edit me-1"></i>Редактировать
+                </a>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        {% if user.has_avatar %}
+                        <img src="{{ user.avatar.url }}" alt="Аватар" class="avatar-lg mb-3">
+                        {% else %}
+                        <div class="avatar-lg bg-secondary rounded-circle d-flex align-items-center justify-content-center mb-3">
+                            <i class="fas fa-user fa-4x text-white"></i>
+                        </div>
+                        {% endif %}
+                    </div>
+                    <div class="col-md-9">
+                        <h3>{{ user.get_full_name }}</h3>
+                        <p class="text-muted">{{ user.email }}</p>
+                        
+                        <div class="row mt-4">
+                            {% if user.bio %}
+                            <div class="col-12 mb-3">
+                                <h5>О себе:</h5>
+                                <p>{{ user.bio|linebreaks }}</p>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="col-md-6">
+                                <h5>Контактная информация:</h5>
+                                <ul class="list-unstyled">
+                                    {% if user.phone %}
+                                    <li class="mb-2">
+                                        <i class="fas fa-phone me-2 text-muted"></i>
+                                        <strong>Телефон:</strong> {{ user.phone }}
+                                    </li>
+                                    {% endif %}
+                                    
+                                    {% if user.city %}
+                                    <li class="mb-2">
+                                        <i class="fas fa-city me-2 text-muted"></i>
+                                        <strong>Город:</strong> {{ user.city }}
+                                    </li>
+                                    {% endif %}
+                                    
+                                    {% if user.date_of_birth %}
+                                    <li class="mb-2">
+                                        <i class="fas fa-birthday-cake me-2 text-muted"></i>
+                                        <strong>Дата рождения:</strong> 
+                                        {{ user.date_of_birth|date:"d.m.Y" }}
+                                    </li>
+                                    {% endif %}
+                                    
+                                    <li class="mb-2">
+                                        <i class="fas fa-calendar-alt me-2 text-muted"></i>
+                                        <strong>Дата регистрации:</strong> 
+                                        {{ user.created_at|date:"d.m.Y" }}
+                                    </li>
+                                </ul>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <h5>Статистика аккаунта:</h5>
+                                <ul class="list-unstyled">
+                                    <li class="mb-2">
+                                        <i class="fas fa-envelope me-2 text-muted"></i>
+                                        <strong>Email подтвержден:</strong> 
+                                        {% if user.emailaddress_set.first.verified %}
+                                        <span class="badge bg-success">Да</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Нет</span>
+                                        {% endif %}
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-user-check me-2 text-muted"></i>
+                                        <strong>Активен:</strong> 
+                                        {% if user.is_active %}
+                                        <span class="badge bg-success">Да</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">Нет</span>
+                                        {% endif %}
+                                    </li>
+                                    <li class="mb-2">
+                                        <i class="fas fa-shield-alt me-2 text-muted"></i>
+                                        <strong>Последний вход:</strong> 
+                                        {% if user.last_login %}
+                                        {{ user.last_login|timesince }} назад
+                                        {% else %}
+                                        <span class="text-muted">Никогда</span>
+                                        {% endif %}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-cog me-2"></i>Действия с аккаунтом
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'accounts:profile_edit' %}" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-edit me-2"></i>Редактировать профиль
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'account_email' %}" class="btn btn-outline-info w-100">
+                            <i class="fas fa-envelope me-2"></i>Управление email
+                        </a>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <a href="{% url 'account_change_password' %}" class="btn btn-outline-warning w-100">
+                            <i class="fas fa-key me-2"></i>Сменить пароль
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

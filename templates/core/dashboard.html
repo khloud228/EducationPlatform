@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}Личный кабинет - {{ block.super }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">
+                    <i class="fas fa-tachometer-alt me-2"></i>Личный кабинет
+                </h1>
+                <p class="card-text text-muted">{{ welcome_message }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-user-circle me-2"></i>Мой профиль
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3 text-center">
+                        {% if user.has_avatar %}
+                        <img src="{{ user.avatar.url }}" alt="Аватар" class="avatar-lg mb-3">
+                        {% else %}
+                        <div class="avatar-lg bg-secondary rounded-circle d-flex align-items-center justify-content-center mb-3">
+                            <i class="fas fa-user fa-4x text-white"></i>
+                        </div>
+                        {% endif %}
+                        <a href="{% url 'accounts:profile_edit' %}" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-edit me-1"></i>Редактировать
+                        </a>
+                    </div>
+                    <div class="col-md-9">
+                        <h4>{{ user.get_full_name }}</h4>
+                        <p class="text-muted">{{ user.email }}</p>
+                        
+                        {% if user.bio %}
+                        <p class="mt-3">{{ user.bio }}</p>
+                        {% else %}
+                        <p class="text-muted mt-3">
+                            <i>Расскажите о себе в 
+                            <a href="{% url 'accounts:profile_edit' %}">настройках профиля</a></i>
+                        </p>
+                        {% endif %}
+                        
+                        <div class="row mt-4">
+                            {% if user.city %}
+                            <div class="col-md-6">
+                                <p>
+                                    <i class="fas fa-city me-2 text-muted"></i>
+                                    <strong>Город:</strong> {{ user.city }}
+                                </p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if user.phone %}
+                            <div class="col-md-6">
+                                <p>
+                                    <i class="fas fa-phone me-2 text-muted"></i>
+                                    <strong>Телефон:</strong> {{ user.phone }}
+                                </p>
+                            </div>
+                            {% endif %}
+                            
+                            {% if user.date_of_birth %}
+                            <div class="col-md-6">
+                                <p>
+                                    <i class="fas fa-birthday-cake me-2 text-muted"></i>
+                                    <strong>Дата рождения:</strong> 
+                                    {{ user.date_of_birth|date:"d.m.Y" }}
+                                </p>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-header bg-info text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-rocket me-2"></i>Быстрый старт
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'accounts:profile_edit' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-user-edit me-2"></i>Заполнить профиль
+                    </a>
+                    <a href="#" class="list-group-item list-group-item-action">
+                        <i class="fas fa-book me-2"></i>Выбрать курс
+                    </a>
+                    <a href="{% url 'account_email' %}" class="list-group-item list-group-item-action">
+                        <i class="fas fa-envelope me-2"></i>Подтвердить email
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Статистика
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-center">
+                    <span class="display-4 fw-bold">0</span><br>
+                    <small class="text-muted">пройденных курсов</small>
+                </p>
+                <hr>
+                <p class="text-center">
+                    <span class="display-4 fw-bold">0</span><br>
+                    <small class="text-muted">часов обучения</small>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header bg-warning text-dark">
+                <h5 class="mb-0">
+                    <i class="fas fa-info-circle me-2"></i>Информация
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <strong>Внимание!</strong> Это базовая версия личного кабинета. 
+                    В ближайшее время здесь появятся ваши курсы, прогресс обучения 
+                    и другие функции.
+                </div>
+                <p>
+                    Для полного доступа ко всем функциям платформы:
+                </p>
+                <ol>
+                    <li>Заполните профиль в разделе "Редактировать профиль"</li>
+                    <li>Подтвердите email-адрес</li>
+                    <li>Выберите интересующие курсы в каталоге</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
