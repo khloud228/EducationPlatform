@@ -3,107 +3,229 @@
 (function() {
     'use strict';
 
-    // Инициализация при загрузке DOM
+    // Состояние аватара
+    let avatarState = {
+        originalSrc: null,
+        hasOriginal: false,
+        isModified: false,
+        fileToUpload: null,
+        markedForDelete: false
+    };
+
     document.addEventListener('DOMContentLoaded', function() {
-        initAvatarPreview();
+        initAvatarClick();
+        initCustomUploadButton();
         initRemoveAvatarButton();
+        initFormSubmit();
         initResetButton();
-        initPhoneFormatter();
-        initFormLeaveWarning();
+        
+        // Сохраняем оригинальное состояние
+        const avatarImg = document.getElementById('avatar-image');
+        if (avatarImg) {
+            avatarState.originalSrc = avatarImg.src;
+            avatarState.hasOriginal = true;
+        }
     });
 
-    // Инициализация предпросмотра аватара
-    function initAvatarPreview() {
-        const avatarInput = document.getElementById('id_avatar');
-        const avatarPreview = document.getElementById('avatar-preview');
-        const fileInfo = document.getElementById('file-info');
-        const avatarLabel = document.querySelector('.avatar-upload-label');
+    // Инициализация клика по аватару
+    function initAvatarClick() {
+        const clickableAvatar = document.getElementById('clickable-avatar');
+        const avatarUpload = document.getElementById('avatar-upload');
+        
+        if (clickableAvatar && avatarUpload) {
+            clickableAvatar.addEventListener('click', function() {
+                avatarUpload.click();
+            });
+        }
+    }
 
-        if (!avatarInput) return;
+    // Инициализация кастомной кнопки загрузки
+    function initCustomUploadButton() {
+        const uploadBtn = document.getElementById('custom-upload-btn');
+        const avatarUpload = document.getElementById('avatar-upload');
+        
+        if (uploadBtn && avatarUpload) {
+            uploadBtn.addEventListener('click', function() {
+                avatarUpload.click();
+            });
+        }
 
-        avatarInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        if (avatarUpload) {
+            avatarUpload.addEventListener('change', handleAvatarSelect);
+        }
+    }
 
-            // Проверка размера файла (2MB)
-            if (file.size > 2 * 1024 * 1024) {
-                showError('Файл слишком большой. Максимальный размер - 2MB.');
-                this.value = '';
-                return;
-            }
+    // Обработка выбора файла
+    function handleAvatarSelect(e) {
+        const file = e.target.files[0];
+        if (!file) return;
 
-            // Проверка типа файла
-            const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-            if (!validTypes.includes(file.type)) {
-                showError('Пожалуйста, выберите изображение в формате JPG, PNG, GIF или WebP.');
-                this.value = '';
-                return;
-            }
+        // Проверка размера файла (2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            showError('Файл слишком большой. Максимальный размер - 2MB.');
+            this.value = '';
+            return;
+        }
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                updateAvatarPreview(e.target.result, file.name);
-            };
-            reader.readAsDataURL(file);
-        });
+        // Проверка типа файла
+        const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+        if (!validTypes.includes(file.type)) {
+            showError('Пожалуйста, выберите изображение в формате JPG, PNG, GIF или WebP.');
+            this.value = '';
+            return;
+        }
+
+        // Сохраняем файл для отправки
+        avatarState.fileToUpload = file;
+        avatarState.isModified = true;
+        avatarState.markedForDelete = false;
+
+        // Синхронизируем с полем Django формы
+        syncFileToDjangoField(file);
+
+        // Показываем превью
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            updateAvatarPreview(e.target.result);
+            showModifiedIndicator();
+            hideError();
+        };
+        reader.readAsDataURL(file);
+    }
+
+    // Синхронизация файла с полем Django формы
+    function syncFileToDjangoField(file) {
+        const djangoField = document.getElementById('id_avatar');
+        if (djangoField) {
+            // Создаем новый FileList с нашим файлом
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            djangoField.files = dataTransfer.files;
+            
+            // Триггерим событие change для Django (на всякий случай)
+            const event = new Event('change', { bubbles: true });
+            djangoField.dispatchEvent(event);
+        }
     }
 
     // Обновление превью аватара
-    function updateAvatarPreview(imageSrc, fileName) {
-        const avatarPreview = document.getElementById('avatar-preview');
-        const fileInfo = document.getElementById('file-info');
-        const avatarContainer = document.querySelector('.avatar-upload-container');
+    function updateAvatarPreview(imageSrc) {
+        const container = document.getElementById('clickable-avatar');
+        const existingImg = document.getElementById('avatar-image');
+        const existingPlaceholder = document.getElementById('avatar-placeholder');
+        const overlay = container.querySelector('.avatar-overlay');
         
-        if (avatarPreview) {
-            avatarPreview.src = imageSrc;
-            avatarPreview.classList.add('current-avatar');
-        } else {
-            // Создаем новый preview если его нет
-            const label = document.querySelector('.avatar-upload-label');
-            const newPreview = document.createElement('img');
-            newPreview.id = 'avatar-preview';
-            newPreview.src = imageSrc;
-            newPreview.alt = 'Новый аватар';
-            newPreview.classList.add('current-avatar');
-            
-            // Удаляем плейсхолдер если есть
-            const placeholder = document.querySelector('.avatar-placeholder');
-            if (placeholder) {
-                placeholder.remove();
-            }
-            
-            label.insertBefore(newPreview, label.querySelector('.avatar-upload-overlay'));
-        }
-
-        // Обновляем информацию о файле
-        if (fileInfo) {
-            fileInfo.innerHTML = `<span class="badge bg-info">
-                <i class="fas fa-cloud-upload-alt me-1"></i>Новое фото: ${fileName || 'выбрано'}
-            </span>`;
-        }
+        // Удаляем существующее содержимое
+        container.innerHTML = '';
+        
+        // Создаем новый img
+        const img = document.createElement('img');
+        img.id = 'avatar-image';
+        img.src = imageSrc;
+        img.alt = 'Аватар';
+        img.className = 'current-avatar';
+        
+        container.appendChild(img);
+        container.appendChild(overlay);
+        
+        // Обновляем состояние кнопки удаления
+        document.getElementById('remove-avatar-btn').disabled = false;
     }
 
-    // Инициализация кнопки удаления аватара
+    // Показать placeholder
+    function showPlaceholder() {
+        const container = document.getElementById('clickable-avatar');
+        const overlay = container.querySelector('.avatar-overlay');
+        
+        container.innerHTML = '';
+        
+        const placeholder = document.createElement('div');
+        placeholder.id = 'avatar-placeholder';
+        placeholder.className = 'avatar-placeholder';
+        placeholder.innerHTML = '<div class="avatar-lg bg-secondary rounded-circle d-flex align-items-center justify-content-center mb-3"><i class="fas fa-user fa-4x text-white"></i></div>';
+        
+        container.appendChild(placeholder);
+        container.appendChild(overlay);
+        
+        // Обновляем состояние
+        avatarState.fileToUpload = null;
+        avatarState.isModified = true;
+        avatarState.markedForDelete = true;
+        
+        // Очищаем поле загрузки и поле Django
+        document.getElementById('avatar-upload').value = '';
+        const djangoField = document.getElementById('id_avatar');
+        if (djangoField) {
+            djangoField.value = '';
+        }
+        
+        // Блокируем кнопку удаления
+        document.getElementById('remove-avatar-btn').disabled = true;
+    }
+
+    // Инициализация кнопки удаления
     function initRemoveAvatarButton() {
         const removeBtn = document.getElementById('remove-avatar-btn');
         if (!removeBtn) return;
 
         removeBtn.addEventListener('click', function(e) {
             e.preventDefault();
+            showPlaceholder();
+            showModifiedIndicator();
+            hideError();
+        });
+    }
+
+    // Показать индикатор изменений
+    function showModifiedIndicator() {
+        const indicator = document.getElementById('avatar-modified-indicator');
+        if (indicator) {
+            indicator.style.display = 'inline-block';
+        }
+    }
+
+    // Скрыть индикатор изменений
+    function hideModifiedIndicator() {
+        const indicator = document.getElementById('avatar-modified-indicator');
+        if (indicator) {
+            indicator.style.display = 'none';
+        }
+    }
+
+    // Показать ошибку
+    function showError(message) {
+        const errorContainer = document.getElementById('avatar-errors');
+        if (errorContainer) {
+            errorContainer.textContent = message;
+        }
+    }
+
+    // Скрыть ошибку
+    function hideError() {
+        const errorContainer = document.getElementById('avatar-errors');
+        if (errorContainer) {
+            errorContainer.textContent = '';
+        }
+    }
+
+    // Инициализация отправки формы
+    function initFormSubmit() {
+        const form = document.getElementById('profile-form');
+        if (!form) return;
+
+        form.addEventListener('submit', function(e) {
+            // Если нужно удалить аватар (показываем placeholder, но оригинал был)
+            if (avatarState.markedForDelete && avatarState.hasOriginal) {
+                // Добавляем скрытое поле для удаления
+                const clearField = document.createElement('input');
+                clearField.type = 'hidden';
+                clearField.name = 'clear_avatar';
+                clearField.value = 'true';
+                form.appendChild(clearField);
+            }
             
-            showConfirmationDialog(
-                'Удаление фото профиля',
-                'Вы уверены, что хотите удалить фото профиля?',
-                function() {
-                    const form = document.getElementById('profile-form');
-                    const removeField = document.createElement('input');
-                    removeField.type = 'hidden';
-                    removeField.name = 'remove_avatar';
-                    removeField.value = 'true';
-                    form.appendChild(removeField);
-                    form.submit();
-                }
-            );
+            // Файл уже должен быть в djangoField через syncFileToDjangoField
+            // Ничего дополнительно делать не нужно
         });
     }
 
@@ -115,110 +237,65 @@
         resetBtn.addEventListener('click', function(e) {
             e.preventDefault();
             
-            showConfirmationDialog(
-                'Сброс изменений',
-                'Все несохраненные изменения будут потеряны. Продолжить?',
-                function() {
-                    const form = document.getElementById('profile-form');
-                    form.reset();
-                    restoreOriginalAvatar();
-                    showNotification('Форма сброшена', 'info');
-                }
-            );
+            if (confirm('Отменить все изменения?')) {
+                resetToOriginal();
+            }
         });
     }
 
-    // Восстановление оригинального аватара
-    function restoreOriginalAvatar() {
-        const avatarPreview = document.getElementById('avatar-preview');
-        const fileInfo = document.getElementById('file-info');
+    // Сброс к оригинальному состоянию
+    function resetToOriginal() {
+        const container = document.getElementById('clickable-avatar');
+        const overlay = container.querySelector('.avatar-overlay');
         
-        {% if user.has_avatar %}
-        if (avatarPreview) {
-            avatarPreview.src = '{{ user.avatar.url }}';
-        }
-        {% endif %}
-        
-        if (fileInfo) {
-            {% if user.has_avatar %}
-            fileInfo.innerHTML = '<span class="badge bg-success"><i class="fas fa-check me-1"></i>Текущее фото</span>';
-            {% else %}
-            fileInfo.innerHTML = '<span class="text-white-50"><i class="fas fa-info-circle me-1"></i>Фото не загружено</span>';
-            {% endif %}
-        }
-    }
-
-    // Инициализация форматирования телефона
-    function initPhoneFormatter() {
-        const phoneInput = document.getElementById('id_phone');
-        if (!phoneInput) return;
-
-        phoneInput.addEventListener('input', function(e) {
-            let value = e.target.value.replace(/\D/g, '');
+        if (avatarState.hasOriginal) {
+            // Был оригинальный аватар
+            container.innerHTML = '';
             
-            if (value.length > 0) {
-                // Добавляем +7 в начало
-                if (value.length <= 11) {
-                    value = '+7' + value.slice(1);
-                }
-                
-                // Форматирование
-                if (value.length <= 2) {
-                    value = value;
-                } else if (value.length <= 5) {
-                    value = value.slice(0, 2) + ' (' + value.slice(2, 5);
-                } else if (value.length <= 8) {
-                    value = value.slice(0, 2) + ' (' + value.slice(2, 5) + ') ' + value.slice(5, 8);
-                } else if (value.length <= 10) {
-                    value = value.slice(0, 2) + ' (' + value.slice(2, 5) + ') ' + value.slice(5, 8) + '-' + value.slice(8, 10);
-                } else {
-                    value = value.slice(0, 2) + ' (' + value.slice(2, 5) + ') ' + value.slice(5, 8) + '-' + value.slice(8, 10) + '-' + value.slice(10, 12);
-                }
-                
-                e.target.value = value;
+            const img = document.createElement('img');
+            img.id = 'avatar-image';
+            img.src = avatarState.originalSrc;
+            img.alt = 'Аватар';
+            img.className = 'current-avatar';
+            
+            container.appendChild(img);
+            container.appendChild(overlay);
+            
+            document.getElementById('remove-avatar-btn').disabled = false;
+            
+            // Очищаем поле Django
+            const djangoField = document.getElementById('id_avatar');
+            if (djangoField) {
+                djangoField.value = '';
             }
-        });
-
-        // Форматируем при потере фокуса
-        phoneInput.addEventListener('blur', function(e) {
-            if (e.target.value) {
-                e.target.value = window.formatPhoneNumber(e.target.value);
-            }
-        });
-    }
-
-    // Предупреждение о несохраненных изменениях
-    function initFormLeaveWarning() {
-        const form = document.getElementById('profile-form');
-        if (!form) return;
-
-        let formChanged = false;
-
-        form.addEventListener('change', function() {
-            formChanged = true;
-        });
-
-        form.addEventListener('input', function() {
-            formChanged = true;
-        });
-
-        window.addEventListener('beforeunload', function(e) {
-            if (formChanged) {
-                e.preventDefault();
-                e.returnValue = '';
-                return '';
-            }
-        });
-
-        form.addEventListener('submit', function() {
-            formChanged = false;
-        });
-    }
-
-    // Показ ошибки
-    function showError(message) {
-        alert(message); // Можно заменить на красивое уведомление
-        console.error(message);
+        } else {
+            // Оригинала не было - показываем placeholder
+            container.innerHTML = '';
+            
+            const placeholder = document.createElement('div');
+            placeholder.id = 'avatar-placeholder';
+            placeholder.className = 'avatar-placeholder';
+            placeholder.innerHTML = '<i class="fas fa-user"></i>';
+            
+            container.appendChild(placeholder);
+            container.appendChild(overlay);
+            
+            document.getElementById('remove-avatar-btn').disabled = true;
+        }
+        
+        // Сбрасываем состояние
+        avatarState.isModified = false;
+        avatarState.fileToUpload = null;
+        avatarState.markedForDelete = false;
+        
+        // Скрываем индикатор
+        hideModifiedIndicator();
+        
+        // Очищаем поле загрузки
+        document.getElementById('avatar-upload').value = '';
+        
+        // Скрываем ошибки
+        hideError();
     }
 
 })();

@@ -6,13 +6,13 @@ from django.conf.urls.static import static
 urlpatterns = [
     # Админка
     path('admin/', admin.site.urls),
-    
+    # Мои настройки
+    path('accounts/', include('accounts.urls', namespace='accounts')),
     # Allauth (аутентификация)
     path('accounts/', include('allauth.urls')),
     
     # Наши приложения
     path('', include('core.urls', namespace='core')),
-    path('profile/', include('accounts.urls', namespace='accounts')),
 ]
 
 # Обслуживание медиафайлов в разработке

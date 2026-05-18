@@ -149,7 +149,7 @@ ACCOUNT_UNIQUE_EMAIL = True
 
 # ----- НАСТРОЙКИ ВХОДА/ВЫХОДА -----
 LOGIN_REDIRECT_URL = 'core:dashboard'
-LOGIN_URL = 'account_login'
+LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = 'core:home'
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True

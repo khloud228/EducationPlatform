@@ -5,123 +5,104 @@
 {% block title %}Редактирование профиля - {{ block.super }}{% endblock %}
 
 {% block extra_css %}
-<!-- Стили только для страницы редактирования профиля -->
 <link rel="stylesheet" href="{% static 'css/profile-edit.css' %}">
 {% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-lg-8 mx-auto">
-        <div class="card profile-edit-card">
-            <div class="card-header profile-edit-header">
+        <div class="card">
+            <div class="card-header bg-primary text-white">
                 <h4 class="mb-0">
                     <i class="fas fa-user-edit me-2"></i>Редактирование профиля
                 </h4>
-                <p class="mb-0 mt-2 small opacity-75">
-                    Заполните информацию о себе. Поля, отмеченные *, обязательны для заполнения.
-                </p>
             </div>
             
-            <div class="card-body p-4">
+            <div class="card-body">
                 <form method="post" enctype="multipart/form-data" novalidate id="profile-form">
                     {% csrf_token %}
+                    {{ form.clear_avatar }}
                     
-                    <!-- Блок аватара -->
-                    <div class="avatar-upload-container">
-                        <div class="text-center">
-                            {% if user.has_avatar %}
-                                <!-- Текущий аватар -->
-                                <label for="id_avatar" class="avatar-upload-label">
-                                    <img id="avatar-preview" src="{{ user.avatar.url }}" 
-                                         alt="Текущий аватар" class="current-avatar">
-                                    <span class="avatar-upload-overlay">
-                                        <i class="fas fa-camera me-1"></i>Изменить фото
-                                    </span>
-                                </label>
+                    <!-- Блок аватара - кастомный, но с сохранением связи с формой -->
+                    <div class="avatar-edit-container">
+                        <div class="clickable-avatar" id="clickable-avatar">
+                            {% if user.avatar and user.avatar.url %}
+                                <img src="{{ user.avatar.url }}" alt="Аватар" class="current-avatar" id="avatar-image">
+                                <span class="avatar-overlay">
+                                    <i class="fas fa-camera me-1"></i>Изменить
+                                </span>
                             {% else %}
-                                <!-- Плейсхолдер для нового аватара -->
-                                <label for="id_avatar" class="avatar-upload-label">
-                                    <div class="avatar-placeholder">
-                                        <i class="fas fa-user"></i>
-                                    </div>
-                                    <span class="avatar-upload-overlay">
-                                        <i class="fas fa-camera me-1"></i>Загрузить фото
-                                    </span>
-                                </label>
+                                <div class="avatar-lg bg-secondary rounded-circle d-flex align-items-center justify-content-center mb-3">
+                                    <i class="fas fa-user fa-4x text-white"></i>
+                                </div>
+                                <span class="avatar-overlay">
+                                    <i class="fas fa-camera me-1"></i>Загрузить
+                                </span>
                             {% endif %}
-                            
-                            <!-- Поле загрузки файла (скрытое) -->
-                            <div class="d-none">
-                                {{ form.avatar }}
-                            </div>
-                            
-                            <!-- Информация о файле -->
-                            <div class="avatar-file-info" id="file-info">
-                                {% if user.has_avatar %}
-                                    <span class="badge bg-success">
-                                        <i class="fas fa-check me-1"></i>Текущее фото
-                                    </span>
-                                {% else %}
-                                    <span class="text-white-50">
-                                        <i class="fas fa-info-circle me-1"></i>Фото не загружено
-                                    </span>
-                                {% endif %}
-                            </div>
-                            
-                            <!-- Кнопка удаления аватара -->
-                            {% if user.has_avatar %}
-                            <div class="mt-3">
-                                <button type="button" class="btn-remove-avatar" id="remove-avatar-btn">
-                                    <i class="fas fa-trash-alt me-1"></i>Удалить текущее фото
-                                </button>
-                            </div>
-                            {% endif %}
-                            
-                            <!-- Подсказка по формату -->
-                            <p class="text-white-50 small mt-3 mb-0">
-                                <i class="fas fa-info-circle me-1"></i>
-                                Рекомендуемый размер: 500x500px. Форматы: JPG, PNG, GIF. Максимум 2MB.
-                            </p>
+                        </div>
+                        
+                        <!-- Поле avatar из формы - ВАЖНО: оно должно быть в форме и видимым для Django -->
+                        <div style="position: absolute; opacity: 0; pointer-events: none; height: 0; width: 0;">
+                            {{ form.avatar }}
+                        </div>
+                        
+                        <!-- Скрытый input для кастомного выбора (будет синхронизироваться с form.avatar) -->
+                        <input type="file" id="avatar-upload" accept="image/jpeg,image/png,image/gif,image/webp" style="display: none;">
+                        
+                        <div class="mt-3">
+                            <button type="button" class="btn-remove-avatar" id="remove-avatar-btn" 
+                                    {% if not user.avatar or not user.avatar.url %}disabled{% endif %}>
+                                <i class="fas fa-trash me-1"></i>Удалить фото
+                            </button>
+                        </div>
+                        
+                        <!-- Контейнер для ошибок -->
+                        <div id="avatar-errors" class="text-danger mt-2 small"></div>
+                        
+                        <!-- Индикатор изменений -->
+                        <div id="avatar-modified-indicator" style="display: none;" class="avatar-modified-badge">
+                            <i class="fas fa-exclamation-triangle me-1"></i>Фото будет изменено после сохранения
+                        </div>
+                    </div>
+                    
+                    <!-- Остальные поля формы через crispy -->
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.first_name|as_crispy_field }}
+                        </div>
+                        <div class="col-md-6">
+                            {{ form.last_name|as_crispy_field }}
                         </div>
                     </div>
                     
                     <div class="row">
                         <div class="col-md-6">
-                            {{ form.first_name|as_crispy_field }}
-                            {{ form.last_name|as_crispy_field }}
                             {{ form.phone|as_crispy_field }}
                         </div>
                         <div class="col-md-6">
                             {{ form.city|as_crispy_field }}
-                            <div class="form-group">
-                                <label for="{{ form.date_of_birth.id_for_label }}">
-                                    <i class="fas fa-birthday-cake me-2 text-primary"></i>Дата рождения
-                                </label>
-                                {{ form.date_of_birth }}
-                                {% if form.date_of_birth.value %}
-                                    <small class="date-help-text">
-                                        <i class="fas fa-calendar-alt me-1"></i>
-                                        Текущая дата: {{ form.date_of_birth.value|date:"d.m.Y" }}
-                                    </small>
-                                {% endif %}
-                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            {{ form.date_of_birth|as_crispy_field }}
                         </div>
                     </div>
                     
                     {{ form.bio|as_crispy_field }}
                     
-                    <hr class="my-4">
+                    <hr>
                     
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a href="{% url 'accounts:profile' %}" class="btn btn-outline-secondary">
-                            <i class="fas fa-arrow-left me-1"></i>Вернуться к профилю
+                    <div class="d-flex justify-content-between">
+                        <a href="{% url 'accounts:profile' %}" class="btn btn-secondary">
+                            <i class="fas fa-times me-1"></i>Отмена
                         </a>
-                        
                         <div>
-                            <button type="reset" class="btn btn-outline-warning me-2" id="reset-btn">
+                            <button type="button" class="btn btn-outline-warning me-2" id="reset-btn">
                                 <i class="fas fa-undo me-1"></i>Сбросить
                             </button>
-                            <button type="submit" class="btn btn-primary px-4">
+                            <button type="submit" class="btn btn-primary">
                                 <i class="fas fa-save me-1"></i>Сохранить изменения
                             </button>
                         </div>
@@ -131,39 +112,21 @@
         </div>
         
         <!-- Дополнительные настройки -->
-        <div class="card settings-card mt-4">
-            <div class="card-header">
+        <div class="card mt-4">
+            <div class="card-header bg-light">
                 <h5 class="mb-0">
-                    <i class="fas fa-cog me-2"></i>Дополнительные настройки аккаунта
+                    <i class="fas fa-cog me-2"></i>Настройки аккаунта
                 </h5>
             </div>
-            <div class="settings-list">
-                <div class="list-group list-group-flush">
-                    <a href="{% url 'account_email' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                        <div>
-                            <i class="fas fa-envelope me-2 text-primary"></i>
-                            <strong>Управление email-адресами</strong>
-                            <p class="mb-0 small text-muted">Добавьте или измените email-адреса</p>
-                        </div>
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
-                    <a href="{% url 'account_change_password' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                        <div>
-                            <i class="fas fa-key me-2 text-primary"></i>
-                            <strong>Смена пароля</strong>
-                            <p class="mb-0 small text-muted">Измените пароль для входа</p>
-                        </div>
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
-                    <a href="{% url 'account_logout' %}" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-danger">
-                        <div>
-                            <i class="fas fa-sign-out-alt me-2"></i>
-                            <strong>Выйти из аккаунта</strong>
-                            <p class="mb-0 small text-muted">Завершить текущую сессию</p>
-                        </div>
-                        <i class="fas fa-chevron-right"></i>
-                    </a>
-                </div>
+            <div class="list-group list-group-flush">
+                <a href="{% url 'account_email' %}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-envelope me-2 text-primary"></i>
+                    Управление email
+                </a>
+                <a href="{% url 'account_change_password' %}" class="list-group-item list-group-item-action">
+                    <i class="fas fa-key me-2 text-primary"></i>
+                    Смена пароля
+                </a>
             </div>
         </div>
     </div>
@@ -171,6 +134,5 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- JavaScript только для страницы редактирования профиля -->
 <script src="{% static 'js/profile-edit.js' %}"></script>
 {% endblock %}

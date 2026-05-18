@@ -1,0 +1,151 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Регистрация - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2><i class="fas fa-graduation-cap me-2"></i>EduPlatform</h2>
+                <p>Создайте новый аккаунт</p>
+            </div>
+            
+            <div class="auth-body">
+                <!-- Сообщения об ошибках -->
+                {% if form.errors %}
+                    <div class="auth-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Пожалуйста, исправьте ошибки ниже.
+                    </div>
+                {% endif %}
+                
+                <form class="auth-form" method="POST" action="{% url 'accounts:signup' %}">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-envelope"></i>Email
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" name="email" class="form-control" 
+                                   placeholder="Ваш email" required>
+                        </div>
+                        <small class="form-text">
+                            На этот адрес будет отправлено письмо с подтверждением
+                        </small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-user"></i>Имя
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="first_name" class="form-control" 
+                                   placeholder="Ваше имя">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-user"></i>Фамилия
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" name="last_name" class="form-control" 
+                                   placeholder="Ваша фамилия">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-lock"></i>Пароль
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password1" class="form-control" 
+                                   placeholder="Придумайте пароль" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-lock"></i>Подтверждение пароля
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password2" class="form-control" 
+                                   placeholder="Повторите пароль" required>
+                        </div>
+                    </div>
+                    
+                    <!-- Требования к паролю -->
+                    <div class="password-requirements">
+                        <small class="text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Пароль должен содержать:
+                        </small>
+                        <ul>
+                            <li><i class="fas fa-circle me-2"></i>Минимум 8 символов</li>
+                            <li><i class="fas fa-circle me-2"></i>Хотя бы одну цифру</li>
+                            <li><i class="fas fa-circle me-2"></i>Не быть слишком простым</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="form-group form-check">
+                        <input type="checkbox" class="form-check-input" id="agree_terms" required>
+                        <label class="form-check-label" for="agree_terms">
+                            Я принимаю <a href="#" target="_blank">условия использования</a>
+                            и <a href="#" target="_blank">политику конфиденциальности</a>
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn auth-btn">
+                        <i class="fas fa-user-plus me-2"></i>Зарегистрироваться
+                    </button>
+                </form>
+                
+                <div class="auth-links">
+                    Уже есть аккаунт? 
+                    <a href="{% url 'accounts:login' %}">
+                        <i class="fas fa-sign-in-alt me-1"></i>Войти
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="{% url 'core:home' %}" class="text-white">
+                <i class="fas fa-arrow-left me-1"></i>Вернуться на главную
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Простая валидация пароля на клиенте
+    document.addEventListener('DOMContentLoaded', function() {
+        const password1 = document.querySelector('input[name="password1"]');
+        const password2 = document.querySelector('input[name="password2"]');
+        
+        if (password1 && password2) {
+            password2.addEventListener('input', function() {
+                if (password1.value !== password2.value) {
+                    password2.setCustomValidity('Пароли не совпадают');
+                } else {
+                    password2.setCustomValidity('');
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}

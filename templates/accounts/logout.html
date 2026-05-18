@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Выход - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2><i class="fas fa-graduation-cap me-2"></i>EduPlatform</h2>
+                <p>Выход из аккаунта</p>
+            </div>
+            
+            <div class="auth-body">
+                <div class="text-center mb-4">
+                    <i class="fas fa-sign-out-alt fa-4x" style="color: var(--auth-gradient-start);"></i>
+                    <h4 class="mt-3">Вы уверены, что хотите выйти?</h4>
+                </div>
+                
+                <form method="post" action="{% url 'account_logout' %}">
+                    {% csrf_token %}
+                    {% if redirect_field_value %}
+                        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                    {% endif %}
+                    
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn auth-btn">
+                            <i class="fas fa-check me-2"></i>Да, выйти
+                        </button>
+                        <a href="javascript:history.back()" class="btn auth-btn-outline">
+                            <i class="fas fa-times me-2"></i>Отмена
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

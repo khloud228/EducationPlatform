@@ -24,13 +24,11 @@
             <a class="navbar-brand" href="{% url 'core:home' %}">
                 <i class="fas fa-graduation-cap me-2"></i>
                 <strong>EduPlatform</strong>
-            </a>
-            
+            </a>            
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
                     data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
-            </button>
-            
+            </button>            
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
@@ -50,8 +48,7 @@
                         </a>
                     </li>
                     {% endif %}
-                </ul>
-                
+                </ul>                
                 <ul class="navbar-nav">
                     {% if user.is_authenticated %}
                     <li class="nav-item dropdown">
@@ -67,13 +64,13 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="{% url 'account_email' %}">
+                                <a class="dropdown-item" href="{% url 'accounts:email' %}">
                                     <i class="fas fa-envelope me-2"></i> Настройки email
                                 </a>
                             </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
-                                <a class="dropdown-item text-danger" href="{% url 'account_logout' %}">
+                                <a class="dropdown-item text-danger" href="{% url 'accounts:logout' %}">
                                     <i class="fas fa-sign-out-alt me-2"></i> Выйти
                                 </a>
                             </li>
@@ -81,12 +78,12 @@
                     </li>
                     {% else %}
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'account_login' %}">
+                        <a class="nav-link" href="{% url 'accounts:login' %}">
                             <i class="fas fa-sign-in-alt me-1"></i> Войти
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="btn btn-outline-light ms-2" href="{% url 'account_signup' %}">
+                        <a class="btn btn-outline-light ms-2" href="{% url 'accounts:signup' %}">
                             Регистрация
                         </a>
                     </li>

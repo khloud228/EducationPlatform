@@ -1,0 +1,460 @@
+/* ===== СТИЛИ ДЛЯ СТРАНИЦ АУТЕНТИФИКАЦИИ ===== */
+
+:root {
+    --auth-gradient-start: #667eea;
+    --auth-gradient-end: #764ba2;
+    --auth-card-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    --auth-input-focus: rgba(102, 126, 234, 0.25);
+}
+
+/* Общий контейнер */
+.auth-wrapper {
+    min-height: calc(100vh - 200px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    background: linear-gradient(135deg, var(--auth-gradient-start) 0%, var(--auth-gradient-end) 100%);
+}
+
+.auth-container {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: var(--auth-card-shadow);
+    overflow: hidden;
+    animation: slideUp 0.5s ease-out;
+}
+
+.auth-header {
+    background: linear-gradient(135deg, var(--auth-gradient-start) 0%, var(--auth-gradient-end) 100%);
+    color: white;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: relative;
+}
+
+.auth-header::after {
+    content: '';
+    position: absolute;
+    bottom: -20px;
+    left: 0;
+    right: 0;
+    height: 40px;
+    background: white;
+    transform: skewY(-2deg);
+    transform-origin: top left;
+}
+
+.auth-header h2 {
+    margin: 0;
+    font-weight: 700;
+    font-size: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.auth-header p {
+    margin: 0.5rem 0 0;
+    opacity: 0.9;
+    font-size: 1rem;
+    position: relative;
+    z-index: 2;
+}
+
+.auth-body {
+    padding: 2.5rem 2rem 2rem;
+}
+
+/* Формы */
+.auth-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.auth-form label {
+    font-weight: 600;
+    color: #495057;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.auth-form label i {
+    color: var(--auth-gradient-start);
+    margin-right: 8px;
+}
+
+.auth-form .form-control {
+    height: 50px;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.auth-form .form-control:focus {
+    border-color: var(--auth-gradient-start);
+    box-shadow: 0 0 0 0.2rem var(--auth-input-focus);
+}
+
+.auth-form .form-text {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-top: 0.5rem;
+}
+
+/* Иконка в поле ввода */
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #adb5bd;
+}
+
+.input-with-icon .form-control {
+    padding-left: 45px;
+}
+
+/* Кнопки */
+.auth-btn {
+    height: 50px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    background: linear-gradient(135deg, var(--auth-gradient-start) 0%, var(--auth-gradient-end) 100%);
+    border: none;
+    color: white;
+    width: 100%;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    color: white;
+}
+
+.auth-btn:active {
+    transform: translateY(0);
+}
+
+.auth-btn i {
+    margin-right: 8px;
+}
+
+.auth-btn-outline {
+    background: transparent;
+    border: 2px solid var(--auth-gradient-start);
+    color: var(--auth-gradient-start);
+    font-weight: 600;
+    text-transform: none;
+}
+
+.auth-btn-outline:hover {
+    background: linear-gradient(135deg, var(--auth-gradient-start) 0%, var(--auth-gradient-end) 100%);
+    color: white;
+    border-color: transparent;
+}
+
+/* Ссылки */
+.auth-links {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.auth-links a {
+    color: var(--auth-gradient-start);
+    text-decoration: none;
+    font-weight: 600;
+    transition: color 0.3s;
+}
+
+.auth-links a:hover {
+    color: var(--auth-gradient-end);
+    text-decoration: underline;
+}
+
+.auth-links .separator {
+    margin: 0 10px;
+    color: #ced4da;
+}
+
+/* Сообщения */
+.auth-error {
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    animation: fadeIn 0.3s;
+}
+
+.auth-error i {
+    margin-right: 8px;
+    color: #dc3545;
+}
+
+.auth-success {
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    animation: fadeIn 0.3s;
+}
+
+/* Требования к паролю */
+.password-requirements {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-size: 0.9rem;
+}
+
+.password-requirements ul {
+    margin: 0.5rem 0 0;
+    padding-left: 1.5rem;
+}
+
+.password-requirements li {
+    margin-bottom: 0.25rem;
+    color: #6c757d;
+}
+
+.password-requirements li.valid {
+    color: #28a745;
+}
+
+.password-requirements li i {
+    margin-right: 8px;
+}
+
+/* Индикатор сложности пароля */
+.password-strength {
+    height: 5px;
+    background: #e9ecef;
+    border-radius: 5px;
+    margin: 10px 0;
+    overflow: hidden;
+}
+
+.password-strength-bar {
+    height: 100%;
+    width: 0;
+    transition: all 0.3s;
+    border-radius: 5px;
+}
+
+.strength-weak { 
+    background: #dc3545; 
+    width: 33.33%; 
+}
+
+.strength-medium { 
+    background: #ffc107; 
+    width: 66.66%; 
+}
+
+.strength-strong { 
+    background: #28a745; 
+    width: 100%; 
+}
+
+/* Список требований */
+.requirements-list {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 15px 0;
+    font-size: 0.9rem;
+}
+
+.requirements-list li {
+    margin-bottom: 5px;
+    color: #6c757d;
+}
+
+.requirements-list li.valid {
+    color: #28a745;
+}
+
+.requirements-list li i {
+    width: 20px;
+    margin-right: 8px;
+}
+
+/* Стили для управления email */
+.email-list {
+    margin: 20px 0;
+}
+
+.email-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    transition: all 0.3s;
+}
+
+.email-item:hover {
+    background-color: #f8f9fa;
+    transform: translateX(5px);
+}
+
+.email-item.primary {
+    border-left: 4px solid var(--auth-gradient-start);
+    background-color: #f0f4ff;
+}
+
+.email-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.email-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Бейджи */
+.badge-primary {
+    background: linear-gradient(135deg, var(--auth-gradient-start) 0%, var(--auth-gradient-end) 100%);
+    color: white;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+.badge-unverified {
+    background: #ffc107;
+    color: #000;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+}
+
+/* Кнопки для email */
+.btn-email {
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 13px;
+    transition: all 0.3s;
+}
+
+.btn-email-primary {
+    background: transparent;
+    border: 1px solid var(--auth-gradient-start);
+    color: var(--auth-gradient-start);
+}
+
+.btn-email-primary:hover {
+    background: var(--auth-gradient-start);
+    color: white;
+}
+
+.btn-email-danger {
+    background: transparent;
+    border: 1px solid #dc3545;
+    color: #dc3545;
+}
+
+.btn-email-danger:hover {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-email-success {
+    background: transparent;
+    border: 1px solid #28a745;
+    color: #28a745;
+}
+
+.btn-email-success:hover {
+    background: #28a745;
+    color: white;
+}
+
+/* Форма добавления email */
+.add-email-form {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 15px;
+    margin-top: 30px;
+}
+
+/* Анимации */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Адаптивность */
+@media (max-width: 576px) {
+    .auth-header {
+        padding: 2rem 1.5rem;
+    }
+    
+    .auth-header h2 {
+        font-size: 1.75rem;
+    }
+    
+    .auth-body {
+        padding: 2rem 1.5rem;
+    }
+    
+    .auth-btn {
+        height: 45px;
+        font-size: 0.9rem;
+    }
+    
+    .email-item {
+        flex-direction: column;
+        gap: 10px;
+        text-align: center;
+    }
+    
+    .email-info {
+        flex-direction: column;
+        gap: 5px;
+    }
+    
+    .email-actions {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}

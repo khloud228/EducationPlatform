@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %}Вход - {{ block.super }}{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h2><i class="fas fa-graduation-cap me-2"></i>EduPlatform</h2>
+                <p>Войдите в свой аккаунт</p>
+            </div>
+            
+            <div class="auth-body">
+                <!-- Сообщения об ошибках -->
+                {% if form.errors %}
+                    <div class="auth-error">
+                        <i class="fas fa-exclamation-circle"></i>
+                        Неправильный email или пароль. Пожалуйста, попробуйте снова.
+                    </div>
+                {% endif %}
+                
+                {% if redirect_field_value %}
+                    <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+                {% endif %}
+                
+                <form class="auth-form" method="POST" action="{% url 'accounts:login' %}">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-envelope"></i>Email
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" name="login" class="form-control" 
+                                   placeholder="Ваш email" required autofocus>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>
+                            <i class="fas fa-lock"></i>Пароль
+                        </label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-lock"></i>
+                            <input type="password" name="password" class="form-control" 
+                                   placeholder="Ваш пароль" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group form-check">
+                        <input type="checkbox" name="remember" class="form-check-input" id="id_remember">
+                        <label class="form-check-label" for="id_remember">
+                            Запомнить меня
+                        </label>
+                    </div>
+                    
+                    <button type="submit" class="btn auth-btn">
+                        <i class="fas fa-sign-in-alt me-2"></i>Войти
+                    </button>
+                </form>
+                
+                <div class="auth-links">
+                    <a href="{% url 'accounts:reset_password' %}">
+                        <i class="fas fa-key me-1"></i>Забыли пароль?
+                    </a>
+                    <span class="separator">|</span>
+                    <a href="{% url 'accounts:signup' %}">
+                        <i class="fas fa-user-plus me-1"></i>Создать аккаунт
+                    </a>
+                </div>
+                
+                {% comment %}
+                <!-- Если нужен вход через соцсети -->
+                <div class="social-auth">
+                    <div class="text-center mb-3">или войдите через</div>
+                    <div class="d-grid gap-2">
+                        <a href="{% provider_login_url 'google' %}" class="btn btn-google">
+                            <i class="fab fa-google me-2"></i>Google
+                        </a>
+                        <a href="{% provider_login_url 'github' %}" class="btn btn-github">
+                            <i class="fab fa-github me-2"></i>GitHub
+                        </a>
+                    </div>
+                </div>
+                {% endcomment %}
+            </div>
+        </div>
+        
+        <!-- Переход на главную -->
+        <div class="text-center mt-4">
+            <a href="{% url 'core:home' %}" class="text-white">
+                <i class="fas fa-arrow-left me-1"></i>Вернуться на главную
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,4 +1,4 @@
-/* ===== ОСНОВНЫЕ СТИЛИ ДЛЯ ВСЕГО САЙТА ===== */
+/* ===== ОСНОВНЫЕ СТИЛИ ===== */
 
 :root {
     --primary-color: #4361ee;
@@ -14,29 +14,28 @@
     --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     --box-shadow-hover: 0 6px 12px rgba(0, 0, 0, 0.15);
     --transition: all 0.3s ease;
+    
+    /* Градиенты для auth */
+    --auth-gradient-start: #667eea;
+    --auth-gradient-end: #764ba2;
 }
 
 /* Базовые стили */
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     background-color: var(--light-bg);
     min-height: 100vh;
-    display: flex;
-    flex-direction: column;
 }
 
-main {
-    flex: 1;
-}
+/* Типографика */
+h1 { font-size: 2.5rem; }
+h2 { font-size: 2rem; }
+h3 { font-size: 1.75rem; }
 
-/* Навигация */
-.navbar-brand {
-    font-size: 1.5rem;
-    font-weight: 600;
-}
-
-.navbar-brand i {
-    margin-right: 8px;
+/* Кнопки */
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 /* Карточки */
@@ -44,19 +43,9 @@ main {
     border: none;
     border-radius: var(--border-radius);
     box-shadow: var(--box-shadow);
-    transition: var(--transition);
 }
 
-.card:hover {
-    box-shadow: var(--box-shadow-hover);
-}
-
-.card-header {
-    border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
-    font-weight: 600;
-}
-
-/* Аватарки */
+/* Аватарки - ТОЛЬКО базовые размеры */
 .avatar {
     width: 40px;
     height: 40px;
@@ -69,84 +58,26 @@ main {
     height: 150px;
     border-radius: 50%;
     object-fit: cover;
-    border: 5px solid white;
-    box-shadow: var(--box-shadow);
 }
 
-.avatar-sm {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-
-/* Кнопки */
-.btn-primary {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-
-.btn-primary:hover {
-    background-color: var(--primary-dark);
-    border-color: var(--primary-dark);
-}
-
-/* Формы */
-.form-control:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
-}
-
-/* Алерты */
-.alert {
-    border-radius: var(--border-radius);
-    border: none;
-}
-
-/* Прогресс-бар */
-.progress {
-    height: 10px;
-    border-radius: 5px;
-}
-
-/* Футер */
-footer {
-    margin-top: auto;
-}
-
-footer a {
-    text-decoration: none;
-    transition: var(--transition);
-}
-
-footer a:hover {
-    color: white !important;
-    text-decoration: underline;
-}
-
-/* Адаптивность */
+/* ===== ЕДИНЫЕ МЕДИА-ЗАПРОСЫ ДЛЯ ВСЕГО САЙТА ===== */
 @media (max-width: 768px) {
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.5rem; }
+    
     .avatar-lg {
         width: 100px;
         height: 100px;
     }
+}
+
+@media (max-width: 576px) {
+    h1 { font-size: 1.75rem; }
+    h2 { font-size: 1.5rem; }
     
-    h1 {
-        font-size: 2rem;
+    .container {
+        padding-left: 15px;
+        padding-right: 15px;
     }
-}
-
-/* Утилиты */
-.text-gradient {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #764ba2 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.bg-gradient-primary {
-    background: linear-gradient(135deg, var(--primary-color) 0%, #764ba2 100%);
-}
-
-.cursor-pointer {
-    cursor: pointer;
 }
